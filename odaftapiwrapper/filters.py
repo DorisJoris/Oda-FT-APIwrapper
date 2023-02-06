@@ -9,8 +9,21 @@ class Filter:
             filter_values (tuple): Filter values
                 Should be one of:
                     [("date_column", "equality_denoter", "year", "month", "day"),
-                    ("column", "search_term", "exact_match")]
-        
+
+                     ("column", "search_term", "exact_match")]
+
+                Where:
+                    date_column (str): Date column name
+                    equality_denoter (str): Equality denoter
+                        Should be one of: ["eq", "ne", "gt", "ge", "lt", "le"]
+                    year (int): Year
+                    month (int, optional): Month. Defaults to None.
+                    day (int, optional): Day. Defaults to None.
+                      
+                    column (str): Column name
+                    search_term (str): Search term
+                    exact_match (bool, optional): Exact match. Defaults to False.
+
         """
         self.string = self.add_filter(filter_type, filter_values)
 

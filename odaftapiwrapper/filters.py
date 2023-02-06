@@ -1,10 +1,22 @@
 # 
 class Filter:
-    def __init__(self):
-        self.string = ""
+    def __init__(self, filter_type, filter_values):
+        """ODA FT API filter class
+        
+        Args:
+            filter_type (str): Filter type
+                Should be one of: ["date", "search"]
+            filter_values (tuple): Filter values
+                Should be one of:
+                    [("date_column", "equality_denoter", "year", "month", "day"),
+                    ("column", "search_term", "exact_match")]
+        
+        """
+        self.string = self.add_filter(filter_type, filter_values)
+
 
     # method that adds a filter to the string by using the _get_date_filter method
-    def add_date_filter(self, date_column, equality_denoter, year, month = None, day = None):
+    def _add_date_filter(self, date_column, equality_denoter, year, month = None, day = None):
         """Add ODA FT API date filter
         
         Args:
@@ -25,7 +37,7 @@ class Filter:
             self.string = self.string + "%20and%20" + date_filter
 
     # method that adds a filter to the string by using the _get_search_filter method
-    def add_search_filter(self, column, search_term, exact_match = False):
+    def _add_search_filter(self, column, search_term, exact_match = False):
         """Add ODA FT API search filter
 
         Args:
@@ -42,6 +54,30 @@ class Filter:
         else:
             self.string = self.string + "%20and%20" + search_filter
     
+    # method that takes a filter type and a tuple of filter values and calls the appropriate method depending on the filter type
+    def add_filter(self, filter_type, filter_values):
+        """Add ODA FT API filter
+
+        Args:
+            filter_type (str): Filter type
+                Should be one of: ["date", "search"]
+            filter_values (tuple): Filter values
+                Should be one of: 
+                    [("date_column", "equality_denoter", "year", "month", "day"),
+                    ("column", "search_term", "exact_match")]
+
+        Raises:
+            ValueError: If filter_type is not one of: ["date", "search"]
+        """
+        filter_type_options = ["date", "search"]
+        if filter_type not in filter_type_options:
+            raise ValueError("filter_type must be one of: %r." % filter_type_options)
+
+        if filter_type == "date":
+            self._add_date_filter(*filter_values)
+        elif filter_type == "search":
+            self._add_search_filter(*filter_values)
+
     @staticmethod
     def _get_date_filter(date_column, equality_denoter, year, month = None, day = None):
         """Get ODA FT API date filter

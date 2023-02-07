@@ -49,13 +49,13 @@ class TestFilter(unittest.TestCase):
     # Using a search filter type with the exact_match parameter set to True
     def test_init_search(self):
         filter_type = "search"
-        filter_values = ("column", "search term", True)
+        filter_values = ("navn", "Mette Møller", True)
         
         # create a Filter object with a search filter
         filter = Filter(filter_type, filter_values)
         
         # check that the string attribute is correct
-        expected_string = "column%20eq%20%27search%20term%27"
+        expected_string = "navn%20eq%20%27Mette%20Møller%27"
         self.assertEqual(filter.string, expected_string)
 
     # Test that the add_date_filter method results in the correct string attribute for a Filter object where the string attribute is not empty

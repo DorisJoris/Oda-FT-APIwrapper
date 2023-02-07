@@ -161,7 +161,7 @@ class Filter:
         Returns:
             str: ODA FT API search filter
         """
-        search_term = re.sub('[^A-Za-z0-9 ]+', '', search_term)
+        search_term = re.sub('[^A-Za-z0-9øæåØÆÅ ]+', '', search_term)
         search_term = search_term.replace(" ", "%20")
 
         if exact_match:

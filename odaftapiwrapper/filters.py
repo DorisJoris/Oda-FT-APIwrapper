@@ -1,4 +1,5 @@
-# 
+import re 
+
 class Filter:
     def __init__(self, filter_type, filter_values):
         """ODA FT API filter class
@@ -25,43 +26,44 @@ class Filter:
                     exact_match (bool, optional): Exact match. Defaults to False.
 
         """
-        self.string = self.add_filter(filter_type, filter_values)
+        self.string = ""
+        self.add_filter(filter_type, filter_values)
 
     # method that takes a filter type and a tuple of filter values and calls the appropriate method depending on the filter type
-        def add_filter(self, filter_type, filter_values):
-            """Add ODA FT API filter
+    def add_filter(self, filter_type, filter_values):
+        """Add ODA FT API filter
 
-            filter_type (str): Filter type
-                Should be one of: ["date", "search"]
-            filter_values (tuple): Filter values
-                Should be one of:
-                    [("date_column", "equality_denoter", "year", "month", "day"),
+        filter_type (str): Filter type
+            Should be one of: ["date", "search"]
+        filter_values (tuple): Filter values
+            Should be one of:
+                [("date_column", "equality_denoter", "year", "month", "day"),
 
-                     ("column", "search_term", "exact_match")]
+                    ("column", "search_term", "exact_match")]
 
-                Where:
-                    date_column (str): Date column name
-                    equality_denoter (str): Equality denoter
-                        Should be one of: ["eq", "ne", "gt", "ge", "lt", "le"]
-                    year (int): Year
-                    month (int, optional): Month. Defaults to None.
-                    day (int, optional): Day. Defaults to None.
-                      
-                    column (str): Column name
-                    search_term (str): Search term
-                    exact_match (bool, optional): Exact match. Defaults to False.
+            Where:
+                date_column (str): Date column name
+                equality_denoter (str): Equality denoter
+                    Should be one of: ["eq", "ne", "gt", "ge", "lt", "le"]
+                year (int): Year
+                month (int, optional): Month. Defaults to None.
+                day (int, optional): Day. Defaults to None.
+                    
+                column (str): Column name
+                search_term (str): Search term
+                exact_match (bool, optional): Exact match. Defaults to False.
 
-            Raises:
-                ValueError: If filter_type is not one of: ["date", "search"]
-            """
-            filter_type_options = ["date", "search"]
-            if filter_type not in filter_type_options:
-                raise ValueError("filter_type must be one of: %r." % filter_type_options)
+        Raises:
+            ValueError: If filter_type is not one of: ["date", "search"]
+        """
+        filter_type_options = ["date", "search"]
+        if filter_type not in filter_type_options:
+            raise ValueError("filter_type must be one of: %r." % filter_type_options)
 
-            if filter_type == "date":
-                self._add_date_filter(*filter_values)
-            elif filter_type == "search":
-                self._add_search_filter(*filter_values)
+        if filter_type == "date":
+            self._add_date_filter(*filter_values)
+        elif filter_type == "search":
+            self._add_search_filter(*filter_values)
 
     # method that adds a filter to the string by using the _get_date_filter method
     def _add_date_filter(self, date_column, equality_denoter, year, month = None, day = None):
@@ -159,6 +161,9 @@ class Filter:
         Returns:
             str: ODA FT API search filter
         """
+        search_term = re.sub('[^A-Za-z0-9 ]+', '', search_term)
+        search_term = search_term.replace(" ", "%20")
+
         if exact_match:
             return column + "%20eq%20%27" + search_term + "%27"
         else:
